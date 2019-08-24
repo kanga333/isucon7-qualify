@@ -1,0 +1,35 @@
+{
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "region": "ap-northeast-1",
+            "source_ami_filter": {
+                "filters": {
+                    "description": "Canonical, Ubuntu, 16.04 LTS, amd64 xenial image build on*"
+                },
+                "owners": [
+                    "aws-marketplace"
+                ],
+                "most_recent": true
+            },
+            "instance_type": "t2.medium",
+            "ssh_username": "ubuntu",
+            "ami_name": "isucon7-qualify-app-{{isotime `20060102030405` }}",
+            "shutdown_behavior": "terminate"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sudo ln -s /usr/bin/python3 /usr/bin/python"
+            ]
+        },
+        {
+            "type": "ansible",
+            "sftp_command": "/usr/libexec/openssh/sftp-server -e",
+            "playbook_file": "allinone/app.yml",
+            "user": "ubuntu"
+        }
+    ]
+}
